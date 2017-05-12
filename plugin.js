@@ -82,7 +82,6 @@ module.exports = (config) => {
     // middleware tells the framework to use these functions when 
     // messages are sent or received
     return {
-        namespace,
         middleware: {
             broadcast: broadcast
         },
