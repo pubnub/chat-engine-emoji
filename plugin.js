@@ -42,7 +42,7 @@ module.exports = (config) => {
     });
 
     let parseEmoji = function(payload, next) {
-        
+
         if(payload.data.text) {
             // parse emoji
             payload.data.text = emoji(payload.data.text, config.url, config.height);
@@ -67,7 +67,7 @@ module.exports = (config) => {
         search(query) {
 
             var results = [];
-            
+
             for(var i in emojis) {
                 if(emojis[i].substring(0, query.length) == query) {
                     results.push(emojis[i]);
@@ -79,9 +79,10 @@ module.exports = (config) => {
         }
     }
 
-    // middleware tells the framework to use these functions when 
+    // middleware tells the framework to use these functions when
     // messages are sent or received
     return {
+        namespace: 'plugin',
         middleware: {
             broadcast: broadcast
         },
