@@ -4,11 +4,11 @@
   "version": "0.0.1",
   "main": "src/plugin.js",
   "dependencies": {
-    "ocf": "^0.0.4"
+    "dotty": "0.0.2",
+    "ocf": "^0.1.3"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.3.0",
-    "ocf": "0.0.2"
+    "mocha": "^3.3.0"
   }
 }

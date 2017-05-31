@@ -1,4 +1,5 @@
 let emojis = require('./emoji.js');
+var dotty = require("dotty");
 
 // this is an example of middleware used in our test.js
 // adds some text to message before it's sent and when it's received
@@ -9,6 +10,9 @@ module.exports = (config) => {
 
     // create empty config object if not supplied
     config = config || {};
+
+    // where in the payload the text is
+    config.prop = config.prop || 'data.text';
 
     config.height = config.height || 16;
 
@@ -43,20 +47,20 @@ module.exports = (config) => {
 
     let parseEmoji = function(payload, next) {
 
-        if(payload.data.text) {
+        let message = dotty.get(payload, config.prop);
+
+        // check if this sub property exists
+        if(message.length) {
+
             // parse emoji
-            payload.data.text = emoji(payload.data.text, config.url, config.height);
+            let newPayload = emoji(message, config.url, config.height);
+            dotty.put(payload, config.prop, newPayload);
+
         }
 
         // continue along middleware
         next(null, payload);
 
-    };
-
-    // define middleware to run after a message has been received and OCF has processed it
-    let broadcast = {
-        'message': parseEmoji,
-        '$history.message': parseEmoji
     };
 
     // these are new methods that will be added to the extended class
@@ -84,7 +88,10 @@ module.exports = (config) => {
     return {
         namespace: 'emoji',
         middleware: {
-            broadcast: broadcast
+            on: {
+                'message': parseEmoji,
+                '$history.message': parseEmoji
+            }
         },
         extends: {
             Chat: extension,

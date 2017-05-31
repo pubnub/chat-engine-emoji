@@ -11,17 +11,11 @@ describe('config', function() {
 
     it('should be configured', function() {
 
-        OCF = OpenChatFramework.create({
-            globalChannel: 'test-channel',
-            rltm: {
-                service: 'pubnub',
-                    config: {
-                    publishKey: 'demo',
-                    subscribeKey: 'demo',
-                    uuid: new Date(),
-                    state: {}
-                }
-            }
+        OCF = OpenChatFramework.create('test-channel', {
+            publishKey: 'demo',
+            subscribeKey: 'demo',
+            uuid: new Date(),
+            state: {}
         });
 
         assert.isOk(OCF);
@@ -47,24 +41,26 @@ describe('plugins', function() {
 
         pluginchat = new OCF.Chat('pluginchat' + new Date().getTime());
 
-        pluginchat.plugin(emoji({}));
+        pluginchat.plugin(emoji());
 
     });
 
     it('publish and subscribe hooks should be called', function(done) {
 
-        pluginchat.ready(() => {
+        pluginchat.on('$ocf.ready', () => {
 
             let success = '<img class="emoji" title=":pizza:" alt="pizza" src="http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/pizza.png" height="16" />';
 
             pluginchat.on('message', (payload) => {
+
+                console.log('message')
 
                 assert.isAbove(payload.data.text.indexOf(success), 0, 'emoji rendered');
                 done();
 
             });
 
-            pluginchat.send('message', {
+            pluginchat.emit('message', {
                 text: 'I want :pizza:'
             });
 
