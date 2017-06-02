@@ -1,5 +1,5 @@
-let emojis = require('./emoji.js');
-var dotty = require("dotty");
+const emojis = require('./emoji.js');
+const dotty = require("dotty");
 
 // this is an example of middleware used in our test.js
 // adds some text to message before it's sent and when it's received
