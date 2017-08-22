@@ -15,7 +15,11 @@ const dotty = require("dotty");
 * @ceplugin
 * @requires {@link ChatEngine}
 * @param {Object} config The config object
+* @param {String} [prop="data.text"] The payload to search for.
+* @param {String} [event="message"] The ChatEngine event that will trigger emoji parsing.
 * @param {Function} config.title The title of the desktop notification
+* @param {Integer} [height=16] The height of the resulting emojiß images
+* @param {String} [url] The web directory where emoji images are hosted. Filename (ex: /smile.png) will be added.
 * @example
 *
 *
@@ -30,13 +34,12 @@ const dotty = require("dotty");
 *     text: 'I want :pizza:'
 * });
 */
-module.exports = (config) => {
+module.exports = (config = {}) => {
 
     // regular expression to find emoji strings
     const test = /:[a-z0-9_\-\+]+:/g;
 
-    // create empty config object if not supplied
-    config = config || {};
+    config.event = config.event || 'message';
 
     // where in the payload the text is
     config.prop = config.prop || 'data.text';
@@ -134,19 +137,20 @@ module.exports = (config) => {
         }
     }
 
-    // middleware tells the framework to use these functions when
-    // messages are sent or received
-    return {
+    let result = {
         namespace: 'emoji',
         middleware: {
-            on: {
-                'message': parseEmoji,
-                '$history.message': parseEmoji
-            }
+            on: {}
         },
         extends: {
-            Chat: extension,
-            GlobalChat: extension
+            Chat: extension
         }
     }
+
+    result.middleware.on[config.event] = parseEmoji;
+    result.middleware.on['$history.' + config.event] = parseEmoji;
+
+    // middleware tells the framework to use these functions when
+    // messages are sent or received
+    return result;
 }
