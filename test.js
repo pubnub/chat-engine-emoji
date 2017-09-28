@@ -2,23 +2,24 @@
 const assert = require('chai').assert;
 const emoji = require('./src/plugin.js');
 
-const OpenChatFramework = require('ocf');
+const ChatEngine = require('chat-engine');
 
 let pluginchat;
-let OCF;
+let CE;
 
 describe('config', function() {
 
     it('should be configured', function() {
 
-        OCF = OpenChatFramework.create('test-channel', {
-            publishKey: 'demo',
-            subscribeKey: 'demo',
-            uuid: new Date(),
-            state: {}
+        CE = ChatEngine.create({
+            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
+        }, {
+            endpoint: 'http://localhost:3000/insecure',
+            globalChannel: 'test-channel'
         });
 
-        assert.isOk(OCF);
+        assert.isOk(CE);
 
     });
 
@@ -26,10 +27,15 @@ describe('config', function() {
 
 describe('connect', function() {
 
-    it('should be identified as new user', function() {
+    it('should be identified as new user', function(done) {
 
-        me = OCF.connect('robot-tester', {works: true});
-        assert.isObject(me);
+        me = CE.connect('robot-tester', {works: true}, 'auth-key');
+
+        CE.on('$.ready', (data) => {
+
+            assert.isObject(data.me);
+            done();
+        });
 
     });
 
@@ -39,7 +45,7 @@ describe('plugins', function() {
 
     it('should be created', function() {
 
-        pluginchat = new OCF.Chat('pluginchat' + new Date().getTime());
+        pluginchat = new CE.Chat('pluginchat' + new Date().getTime());
 
         pluginchat.plugin(emoji());
 
@@ -47,7 +53,7 @@ describe('plugins', function() {
 
     it('publish and subscribe hooks should be called', function(done) {
 
-        pluginchat.on('$ocf.ready', () => {
+        pluginchat.on('$.connected', () => {
 
             let success = '<img class="emoji" title=":pizza:" alt="pizza" src="http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/pizza.png" height="16" />';
 

@@ -4,8 +4,8 @@
   "version": "0.0.6",
   "main": "src/plugin.js",
   "dependencies": {
-    "dotty": "0.0.2",
     "chat-engine": "^0.5.2",
+    "dotty": "0.0.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
