@@ -29,7 +29,7 @@ describe('connect', function() {
 
     it('should be identified as new user', function(done) {
 
-        me = CE.connect('robot-tester', {works: true}, 'auth-key');
+        CE.connect('robot-tester', {works: true}, 'auth-key');
 
         CE.on('$.ready', (data) => {
 
