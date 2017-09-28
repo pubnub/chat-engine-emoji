@@ -1,5 +1,5 @@
 # Emoji Plugin
 
-Turns ':pizza:' into an image of pizza within chatrooms.
+Turns ```:pizza:``` into :pizza: within chats.
 
 See test.js for an example of usage.
