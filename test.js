@@ -12,11 +12,10 @@ describe('config', function() {
     it('should be configured', function() {
 
         CE = ChatEngine.create({
-            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
+            publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+            subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
         }, {
-            endpoint: 'http://localhost:3000/insecure',
-            globalChannel: 'test-channel'
+            namespace: 'test-channel'
         });
 
         assert.isOk(CE);
@@ -29,11 +28,12 @@ describe('connect', function() {
 
     it('should be identified as new user', function(done) {
 
-        CE.connect('robot-tester', {works: true}, 'auth-key');
+        this.timeout(30000);
 
-        CE.on('$.ready', (data) => {
+        CE.connect('robot-tester');
 
-            assert.isObject(data.me);
+        CE.on('$.ready', (me) => {
+            assert.isObject(me);
             done();
         });
 
@@ -45,7 +45,7 @@ describe('plugins', function() {
 
     it('should be created', function() {
 
-        pluginchat = new CE.Chat('pluginchat' + new Date().getTime());
+        pluginchat = new CE.Chat('pluginchat' + new Date().getTime(), {autoConnect: false});
 
         pluginchat.plugin(emoji());
 
@@ -53,13 +53,13 @@ describe('plugins', function() {
 
     it('publish and subscribe hooks should be called', function(done) {
 
+        this.timeout(30000);
+
         pluginchat.on('$.connected', () => {
 
             let success = '<img class="emoji" title=":pizza:" alt="pizza" src="http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/pizza.png" height="16" />';
 
             pluginchat.on('message', (payload) => {
-
-                console.log('message')
 
                 assert.isAbove(payload.data.text.indexOf(success), 0, 'emoji rendered');
                 done();
@@ -71,6 +71,8 @@ describe('plugins', function() {
             });
 
         });
+
+        pluginchat.connect();
 
     });
 
