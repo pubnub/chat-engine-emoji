@@ -1,5 +1,5 @@
 /**
- *
+* @overview Emojis are an essential aspect of today's chat conversations and applications. With the ChatEngine Emoji plugin, you can enable the ability for your users to use emojis in their conversations.
 * @module chat-engine-emoji
 * @description  Parses emoji in ```payload.data.text```.
 */
